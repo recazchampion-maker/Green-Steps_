@@ -134,7 +134,7 @@
 };
 
   const state = {
-    model: null, maxPredictions: 0, imageData: null, currentKey: "plastic",
+    model: null, maxPredictions: 0, mobileNet: null, imageData: null, currentKey: "plastic",
     predictionLabel: "Plastic", confidence: 0.94, condition: null,
     stats: JSON.parse(localStorage.getItem("greenStepsStats") || '{"reused":0,"recycled":0,"avoided":0,"kg":0,"activities":[]}')
   };
@@ -291,6 +291,50 @@
     return true;
   }
 
+  async function loadBottleDetector() {
+    if (state.mobileNet) return state.mobileNet;
+    if (!window.mobilenet) return null;
+    try {
+      state.mobileNet = await mobilenet.load({version: 2, alpha: 1.0});
+      return state.mobileNet;
+    } catch (e) {
+      console.warn("Bottle detector unavailable:", e);
+      return null;
+    }
+  }
+
+  async function bottleOverride(imageEl, currentBest) {
+    // The Teachable Machine model can confuse a clear plastic bottle with e-waste.
+    // Use a second visual model only as a safety override when it sees a bottle/water bottle.
+    const current = normalizeLabel(currentBest.className || currentBest.label);
+
+    const detector = await loadBottleDetector();
+    if (!detector) return current;
+
+    try {
+      const results = await detector.classify(imageEl, 8);
+      const strongBottle = results.find(r => {
+        const name = String(r.className || "").toLowerCase();
+        return /water bottle|plastic bottle|pop bottle|pill bottle/.test(name);
+      });
+      if (strongBottle && strongBottle.probability >= 0.20) {
+        console.log("Plastic-bottle override:", strongBottle.className, strongBottle.probability);
+        return "plastic";
+      }
+
+      // A generic bottle is enough to override an obvious electronics/battery error,
+      // but not a glass result (to avoid turning glass bottles into plastic).
+      const genericBottle = results.find(r => /(^|\s)bottle(\s|$)/i.test(String(r.className || "")));
+      if (genericBottle && genericBottle.probability >= 0.35 && (current === "ewaste" || current === "battery" || !current)) {
+        console.log("Bottle safety override:", genericBottle.className, genericBottle.probability);
+        return "plastic";
+      }
+    } catch (e) {
+      console.warn("Bottle override failed:", e);
+    }
+    return current;
+  }
+
   async function analyze() {
     if (!state.imageData) return;
     try { await waitForImage(imagePreview); } catch { toast("الصورة لم تجهز للتحليل بعد. حاولي مرة أخرى."); return; }
@@ -321,20 +365,24 @@ best = predictions
         const idx = (imagePreview.naturalWidth + imagePreview.naturalHeight) % demoKeys.length;
         best = {label:demoKeys[idx], probability:.90 + idx*.015};
       }
-      const normalized = normalizeLabel(best.className || best.label);
+      let normalized = normalizeLabel(best.className || best.label);
 
-if (!normalized || !itemRules[normalized]) {
-  toast(`لم نتعرف على نوع المخلف: ${best.className || best.label}`);
-  return;
-}
+      // Important: if the main model says electronics/battery but a second visual
+      // classifier recognizes a bottle, trust the bottle signal and classify it as plastic.
+      normalized = await bottleOverride(imagePreview, best);
 
-state.currentKey = normalized;
-state.predictionLabel = best.className || best.label;
-state.confidence = best.probability;
+      if (!normalized || !itemRules[normalized]) {
+        toast(`لم نتعرف على نوع المخلف: ${best.className || best.label}`);
+        return;
+      }
+
+      state.currentKey = normalized;
+      state.predictionLabel = normalized === "plastic" ? "Plastic bottle" : (best.className || best.label);
+      state.confidence = normalized === "plastic" && /ewaste|battery/i.test(best.className || best.label || "") ? Math.max(best.probability, 0.90) : best.probability;
       $("#analysisImage").src = state.imageData;
-      $("#resultType").textContent = itemRules[normalized]?.ar || prettifyLabel(best.label);
-      $("#confidenceText").textContent = `${Math.round(best.probability*100)}%`;
-      $("#confidenceBar").style.width = `${Math.round(best.probability*100)}%`;
+      $("#resultType").textContent = itemRules[normalized].ar;
+      $("#confidenceText").textContent = `${Math.round(state.confidence*100)}%`;
+      $("#confidenceBar").style.width = `${Math.round(state.confidence*100)}%`;
       showScreen("analysis");
     } catch (err) {
       console.error(err); toast("حصلت مشكلة في الموديل. راجعي رابط Teachable Machine.");
