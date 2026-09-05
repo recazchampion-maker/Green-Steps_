@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#1f8f4c">
+  <title>Green Steps | Small Steps, Big Change</title>
+  <meta name="description" content="Green Steps - منصة ذكية لإعادة استخدام المخلفات والتبرع بها وتدويرها والتخلص الآمن منها.">
+  <link rel="icon" href="assets/green-steps-img.png">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="toast" class="toast" aria-live="polite"></div>
+
+  <header class="topbar">
+    <button class="icon-btn mobile-menu" id="mobileMenuBtn" aria-label="فتح القائمة">☰</button>
+    <a class="brand" href="#home" data-screen="home">
+      <img src="assets/green-steps-img.png" alt="Green Steps">
+      <span>Green Steps</span>
+    </a>
+    <nav class="nav" id="mainNav">
+      <a href="#home" data-screen="home">الرئيسية</a>
+      <a href="#scan" data-screen="scan">حلّل شيئًا</a>
+      <a href="#impact" data-screen="impact">الأثر البيئي</a>
+      <a href="#guide" data-screen="guide">دليل التخلص</a>
+    </nav>
+    <div class="top-actions">
+      <button class="pill-btn" id="languageBtn">EN</button>
+      <button class="icon-btn" id="notificationsBtn" aria-label="الإشعارات">♧</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- 1. Splash -->
+    <section class="screen splash-screen active" id="splash" data-title="البداية">
+      <div class="splash-card">
+        <div class="logo-orbit"><img src="assets/green-steps-img.png" alt="Green Steps logo"></div>
+        <span class="eyebrow">GREEN STEPS</span>
+        <h1>خطوة صغيرة منك<br><span>تحمي كوكبنا 🌱</span></h1>
+        <p>اعرف قيمة الشيء الذي لم تعد تحتاجه، واكتشف أفضل طريقة لإعادة استخدامه أو تدويره أو التخلص منه بأمان.</p>
+        <button class="primary-btn large" data-screen="home">ابدأ الآن <span>←</span></button>
+        <div class="splash-stats">
+          <span>♻️ إعادة استخدام</span>
+          <span>🎁 تبرع</span>
+          <span>🌍 أثر بيئي</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. Home -->
+    <section class="screen" id="home" data-title="الرئيسية">
+      <div class="hero">
+        <div>
+          <span class="eyebrow">GREEN STEPS • SMALL STEPS</span>
+          <h2>مرحبًا بك! <span>👋</span></h2>
+          <p>الحاجة اللي مش محتاجها ممكن تكون بداية حياة جديدة لحد تاني.</p>
+          <button class="primary-btn" data-screen="scan">أضف شيئًا لا تحتاجه <span>←</span></button>
+        </div>
+        <div class="hero-illustration">
+          <div class="leaf leaf-a">🌿</div>
+          <div class="hero-circle">🌍</div>
+          <div class="leaf leaf-b">🍃</div>
+        </div>
+      </div>
+
+      <div class="section-heading">
+        <div><span class="eyebrow">HOW IT WORKS</span><h3>هنساعدك في 3 خطوات</h3></div>
+      </div>
+      <div class="steps-grid">
+        <article class="step-card"><b>01</b><div class="step-icon">📸</div><h4>صوّر أو ارفع</h4><p>التقط صورة للشيء الذي لم تعد تحتاجه.</p></article>
+        <article class="step-card"><b>02</b><div class="step-icon">🤖</div><h4>حلّل</h4><p>الذكاء الاصطناعي يساعد في التعرف على نوع المخلف.</p></article>
+        <article class="step-card"><b>03</b><div class="step-icon">🌱</div><h4>اختار أفضل خطوة</h4><p>تبرع، بدّل، دوّر، أو تخلّص منه بأمان.</p></article>
+      </div>
+
+      <div class="mini-dashboard">
+        <div><span>♻️</span><strong id="homeReused">0</strong><small>تمت إعادة استخدامها</small></div>
+        <div><span>🔄</span><strong id="homeRecycled">0</strong><small>تم إرسالها للتدوير</small></div>
+        <div><span>🌿</span><strong id="homeAvoided">0 kg</strong><small>مخلفات تم تجنبها</small></div>
+      </div>
+    </section>
+
+    <!-- 3. Upload / Scan -->
+    <section class="screen" id="scan" data-title="إضافة المخلف">
+      <div class="page-head">
+        <button class="back-btn" data-screen="home">→</button>
+        <div><span class="eyebrow">STEP 01 / 02</span><h2>أضف شيئًا لا تحتاجه</h2><p>صوّر الشيء أو ارفع صورة واضحة له.</p></div>
+      </div>
+
+      <div class="scan-layout">
+        <div class="upload-card">
+          <div class="preview-wrap" id="previewWrap">
+            <div class="upload-placeholder" id="uploadPlaceholder">
+              <span class="camera-big">📷</span>
+              <h3>ارفع صورة</h3>
+              <p>PNG / JPG / WEBP</p>
+            </div>
+            <img id="imagePreview" alt="معاينة الصورة" hidden>
+            <video id="cameraVideo" autoplay playsinline hidden></video>
+            <canvas id="captureCanvas" hidden></canvas>
+          </div>
+          <div class="upload-actions">
+            <label class="secondary-btn file-label">🖼️ اختيار صورة<input type="file" id="imageInput" accept="image/*" hidden></label>
+            <button class="secondary-btn" id="cameraBtn">📷 فتح الكاميرا</button>
+            <button class="secondary-btn danger-outline" id="stopCameraBtn" hidden>إغلاق الكاميرا</button>
+          </div>
+          <button class="primary-btn full" id="analyzeBtn" disabled>تحليل الصورة 🤖</button>
+          <div class="model-status" id="modelStatus"><span class="status-dot"></span><span>وضع التجربة: الموديل غير موصل بعد</span></div>
+        </div>
+
+        <aside class="info-card">
+          <span class="info-icon">💡</span>
+          <h3>نصيحة للحصول على نتيجة أفضل</h3>
+          <ul>
+            <li>ضع الشيء في إضاءة جيدة.</li>
+            <li>اجعل المخلف ظاهرًا بالكامل.</li>
+            <li>يفضل ألا توجد أشياء كثيرة حوله.</li>
+          </ul>
+          <div class="model-box">
+            <strong>Teachable Machine</strong>
+            <p>الموقع مجهز لربط موديل تصنيف الصور مباشرة.</p>
+            <button class="text-btn" id="modelSettingsBtn">إعداد الموديل →</button>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- 4. Analysis -->
+    <section class="screen" id="analysis" data-title="نتيجة التحليل">
+      <div class="page-head">
+        <button class="back-btn" data-screen="scan">→</button>
+        <div><span class="eyebrow">STEP 02</span><h2>نتيجة التحليل</h2><p>الموديل تعرف على العنصر التالي.</p></div>
+      </div>
+      <div class="analysis-card">
+        <div class="analysis-image"><img id="analysisImage" alt="العنصر الذي تم تحليله"></div>
+        <div class="analysis-info">
+          <span class="result-badge">✓ تم التحليل</span>
+          <p class="muted">نوع المخلف</p>
+          <h2 id="resultType">Plastic</h2>
+          <div class="confidence"><span>ثقة النموذج</span><strong id="confidenceText">--%</strong><div class="progress"><i id="confidenceBar"></i></div></div>
+          <div class="condition-question">
+            <h3>كيف هي حالة الشيء؟</h3>
+            <p>اختاري الحالة الأقرب للواقع للحصول على التوصية المناسبة.</p>
+            <div class="condition-grid">
+              <button class="condition-btn good" data-condition="good"><span>👍</span><b>جيدة</b><small>ما زال صالحًا للاستخدام</small></button>
+              <button class="condition-btn fair" data-condition="fair"><span>🛠️</span><b>تحتاج إصلاح</b><small>يمكن إنقاذه أو إصلاحه</small></button>
+              <button class="condition-btn bad" data-condition="bad"><span>⚠️</span><b>سيئة</b><small>غير صالح للاستخدام</small></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. Good Condition -->
+    <section class="screen" id="good" data-title="بحالة جيدة">
+      <div class="page-head">
+        <button class="back-btn" data-screen="analysis">→</button>
+        <div><span class="eyebrow">BEST NEXT STEP</span><h2>بحالة جيدة 💚</h2><p>ممتاز! لا ترميه. يمكن أن يحصل على حياة جديدة.</p></div>
+      </div>
+      <div class="decision-card good-card">
+        <div class="decision-visual">🎁</div>
+        <div class="decision-main">
+          <span class="result-badge good-badge">قابل لإعادة الاستخدام</span>
+          <h2 id="goodItemName">Plastic Item</h2>
+          <p>أفضل الخيارات لهذا العنصر:</p>
+          <div class="option-grid">
+            <button class="option-card" id="donateBtn"><span>🎁</span><b>تبرع به</b><small>وصّله لشخص محتاجه</small></button>
+            <button class="option-card" id="exchangeBtn"><span>🔄</span><b>بدّله بشيء آخر</b><small>قيمة تقديرية <strong id="estimatedValue">50 جنيه</strong></small></button>
+          </div>
+          <button class="outline-btn" data-screen="impact">شاهد أثرك البيئي ←</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. Bad Condition -->
+    <section class="screen" id="bad" data-title="بحالة سيئة">
+      <div class="page-head">
+        <button class="back-btn" data-screen="analysis">→</button>
+        <div><span class="eyebrow">SAFE DISPOSAL</span><h2>بحالة سيئة ⚠️</h2><p>خلينا نختار الطريقة الأكثر أمانًا للبيئة.</p></div>
+      </div>
+      <div class="risk-card">
+        <div class="risk-header">
+          <div class="risk-icon" id="riskIcon">♻️</div>
+          <div><span class="muted">نوع العنصر</span><h2 id="badItemName">Plastic</h2></div>
+          <div class="risk-level" id="riskLevel">خطورة منخفضة</div>
+        </div>
+        <div class="risk-content">
+          <div class="safe-option"><span>♻️</span><div><b>إعادة التدوير</b><p id="recycleText">اختاري أفضل طريقة: مكان قريب، تدوير منزلي، أو فيديو يشرح الطريقة.</p></div><button class="small-btn" id="recycleBtn">اختيارات التدوير</button></div>
+          <div class="safe-option"><span>📍</span><div><b>التخلص منه</b><p>اعثر على نقطة التخلص المناسبة حسب موقعك.</p></div><button class="small-btn" id="disposalBtn">أقرب مكان</button></div>
+          <div class="safe-option" id="safeGuideOption"><span>🛡️</span><div><b>طريقة التخلص الآمن</b><p id="safeGuideText">اتبع إرشادات النوع قبل التخلص منه.</p></div><button class="small-btn" id="guideBtn">الإرشادات</button></div>
+        </div>
+      </div>
+      <div class="location-note"><span>📍</span><div><b>الموقع الجغرافي</b><p id="locationStatus">اضغط على "أقرب مكان" للسماح للموقع باستخدام موقعك.</p></div></div>
+    </section>
+
+    <!-- 7. Impact -->
+    <section class="screen" id="impact" data-title="الأثر البيئي">
+      <div class="page-head">
+        <button class="back-btn" data-screen="home">→</button>
+        <div><span class="eyebrow">YOUR IMPACT</span><h2>أثرك البيئي 🌍</h2><p>كل خطوة صغيرة بتفرق.</p></div>
+      </div>
+      <div class="impact-hero">
+        <div class="impact-earth">🌍</div>
+        <div><span>لقد ساعدت في تجنب</span><strong id="impactKg">0 kg</strong><span>من المخلفات</span></div>
+        <div class="level-chip">🌱 Green Starter</div>
+      </div>
+      <div class="impact-grid">
+        <div class="impact-stat"><span>🎁</span><strong id="impactReused">0</strong><small>أشياء تم إعادة استخدامها</small></div>
+        <div class="impact-stat"><span>♻️</span><strong id="impactRecycled">0</strong><small>أشياء تم تحويلها للتدوير</small></div>
+        <div class="impact-stat"><span>🗑️</span><strong id="impactAvoided">0</strong><small>مخلفات تم تجنبها</small></div>
+      </div>
+      <div class="activity-card">
+        <div class="section-heading"><div><span class="eyebrow">MY ACTIVITY</span><h3>حاجاتي وخطواتي 🌱</h3><p class="activity-subtitle">كل حاجة اخترتِ لها خطوة بتظهر هنا بصورتها ونوع الإجراء والقيمة.</p></div></div>
+        <div id="activityList" class="activity-list"><div class="empty-activity">لسه مفيش خطوات مسجلة. ابدئي بإضافة أول حاجة! 💚</div></div>
+      </div>
+      <div class="impact-progress">
+        <div class="progress-head"><b>مستواك البيئي</b><span id="levelText">0 / 5 خطوات</span></div>
+        <div class="progress"><i id="impactProgress"></i></div>
+        <p>نفّذ 5 خطوات صديقة للبيئة لفتح مستوى <b>Eco Helper 🌿</b></p>
+      </div>
+    </section>
+
+    <!-- Guide -->
+    <section class="screen" id="guide" data-title="دليل التخلص">
+      <div class="page-head">
+        <button class="back-btn" data-screen="bad">→</button>
+        <div><span class="eyebrow">SAFETY GUIDE</span><h2>دليل التخلص الآمن</h2><p id="guideSubtitle">اختار نوع المخلف لمعرفة الإجراء المناسب.</p></div>
+      </div>
+      <div class="guide-grid" id="guideGrid"></div>
+    </section>
+  </main>
+
+  <!-- Recycling options modal -->
+  <div class="modal" id="recycleModal" aria-hidden="true">
+    <div class="modal-box recycle-modal-box">
+      <button class="modal-close" id="closeRecycleModal">×</button>
+      <span class="eyebrow">SMART RECYCLING</span>
+      <h2 id="recycleModalTitle">إيه أفضل طريقة للتدوير؟ ♻️</h2>
+      <p>اختاري الطريقة المناسبة للعنصر الحالي:</p>
+      <div class="recycle-choice-grid">
+        <button class="recycle-choice" id="recycleMapChoice"><span>📍</span><b>مكان إعادة تدوير</b><small>ابحثي عن أقرب نقطة مناسبة على الخريطة.</small></button>
+        <button class="recycle-choice" id="homeRecycleChoice"><span>🏠</span><b>دوّريه في البيت</b><small>أفكار سهلة للاستفادة من العنصر بدل رميه.</small></button>
+        <button class="recycle-choice" id="youtubeRecycleChoice"><span>▶️</span><b>شاهدي طريقة على YouTube</b><small>فيديوهات وأفكار لإعادة تدوير نفس النوع.</small></button>
+      </div>
+      <div id="homeRecycleIdea" class="home-recycle-idea" hidden></div>
+    </div>
+  </div>
+
+  <!-- Model settings modal -->
+  <div class="modal" id="modelModal" aria-hidden="true">
+    <div class="modal-box">
+      <button class="modal-close" id="closeModal">×</button>
+      <span class="eyebrow">AI MODEL</span>
+      <h2>ربط Teachable Machine</h2>
+      <p>الصق رابط الموديل الذي حصلتِ عليه بعد Export → Upload my model.</p>
+      <label class="input-label">Model URL
+        <input id="modelUrlInput" type="url" placeholder="https://teachablemachine.withgoogle.com/models/XXXX/">
+      </label>
+      <div class="modal-actions">
+        <button class="secondary-btn" id="clearModelBtn">استخدم Demo</button>
+        <button class="primary-btn" id="saveModelBtn">حفظ وتشغيل الموديل</button>
+      </div>
+      <small class="modal-help">يمكن تغيير الرابط في أي وقت. عند عدم وجود رابط، يعمل الموقع بوضع Demo للتجربة.</small>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8/dist/teachablemachine-image.min.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
