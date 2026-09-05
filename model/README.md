@@ -7,15 +7,14 @@ https://teachablemachine.withgoogle.com/models/XXXX/
 
 إذا أصبح لديكم model.json وmetadata.json وملفات weights، يمكن تعديل `js/app.js` ليقرأها من هذا المجلد بدل الرابط.
 
-## Classes المدعومة في التطبيق
+## Classes المقترحة
 1. Plastic
 2. Paper
-3. Cardboard
-4. Glass
-5. Metal
-6. Battery
-7. E-Waste
-8. Clothes
-9. Organic
+3. Glass
+4. Metal
+5. Battery
+6. E-Waste
+7. Clothes
+8. Organic
 
 نصيحة: اجعلوا صور التدريب متنوعة في الإضاءة والخلفية والزوايا، ولا تعتمدوا على صور متشابهة جدًا.
